@@ -8,10 +8,10 @@ class ODECalculator:
 
     def solution(self, x):
         instance_values = self.initial_conditions
-        equation_degree = len(instance_values)
+        equation_degree = len(instance_values) - 1
 
         for t in np.arange(0, x, self.dt):
-            for i in range(equation_degree):
+            for i in range(equation_degree + 1):
                 if i == 0:
                     instance_values[i] = self.get_highest_order(instance_values, t)
                 else:

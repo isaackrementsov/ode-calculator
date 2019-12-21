@@ -7,8 +7,8 @@ class DataGenerator:
     def generate_data(self, x_initial, x_final, step):
         values = []
 
-        for x in range(x_initial, x_final, step):
-            coordinates = {x: x, y: self.function(x)}
+        for x in np.arange(x_initial, x_final, step):
+            coordinates = {'x': x, 'y': self.function(x)}
 
             values.append(coordinates)
 
