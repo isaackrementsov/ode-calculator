@@ -1,0 +1,54 @@
+html, body {
+    background-color: rgb(70,70,70);
+    color: lightgrey;
+}
+.fill {
+    max-width: 100%;
+    background: linear-gradient(115deg, #D81B60, #880E4F);
+    text-align: center;
+    padding: 30px;
+    margin-bottom: 40px;
+}
+.fill h1 {
+    color: white;
+}
+.card {
+    padding: 20px 30px;
+    margin: 0px;
+    background-color: rgb(85,85,85);
+}
+.form-control, .form-control:focus {
+    background-color: transparent;
+    background-color: rgb(80,80,80);
+    border-color: rgb(70,70,70);
+    color: lightgrey;
+}
+.form-control:focus {
+    color: whitesmoke !important;
+}
+.btn-cta {
+    background-color: #FF4081;
+    border-color: #FF4081;
+    color: white !important;
+    padding: 7px 60px;
+    margin: 20px auto;
+}
+.btn-cta:hover, .btn-cta:focus {
+    background-color: #F50057;
+    border-color: #F50057;
+}
+.btn-cta:focus, .btn-cta:active, .form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 64, 129, 0.4);
+    outline: 0 none;
+}
+.color1 {
+    background: linear-gradient(115deg, #C51162, #F50057);
+}
+.color2 {
+    background-color: rgb(90,90,90)
+}
+.eq {
+    letter-spacing: 2px;
+    width: 100%;
+    margin: 10px;
+}

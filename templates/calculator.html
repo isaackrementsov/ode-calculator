@@ -3,7 +3,9 @@
     <head>
         <meta charset="UTF-8">
         <title>ODE Calculator</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="static/css/bootstrap.css">
+        <link rel="stylesheet" href="static/css/main.css" type="text/css">
+        <link rel="icon" href="static/img/favicon.ico" type="image/x-icon">
     </head>
     <body>
         <div class="container fill">
@@ -14,79 +16,134 @@
         <div class="container">
             <div class="row">
                 <form action="/" onsubmit="return prepareEquation()">
-                    <div class="form-group">
-                        <label>Enter your differential equation in terms of y and t, with only the highest derivative of y on the left side</label>
-                        <input type="text" class="form-control" name="equation" id="equation" placeholder="ex. y''' = y'' - e^(y+1) + log(t)">
+                    <input type="hidden" name="equation" id="equation">
+                    <div class="row">
+                        {% if error %}
+                            <div class="form-group">
+                                <label style="color: #FF4081">{{error}}</label>
+                            </div>
+                        {% endif %}
                     </div>
-                    <div class="form-group">
-                        <label>Enter graph precision and x-range</label>
-                        <input type="number" class="form-control" step="0.001" name="dataset_step" placeholder="step">
-                        <input type="number" class="form-control" step="0.001" name="dataset_xmin" placeholder="Minimum x value">
-                        <input type="number" class="form-control" step="0.001" name="dataset_xmax" placeholder="Maximum x value">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="card">
+                                <div class="form-group">
+                                    <label>Differential equation in terms of <i>y</i> and <i>t</i>, with only the highest derivative of y on the left side</label>
+                                    <input type="text" class="form-control" name="equation_original" id="equation_original" placeholder="ex. y''' = y'' - e^(y+1) + log(t)">
+                                </div>
+                                <div class="form-group">
+                                    <label>Enter initial values in the order of decreasing derivative order (...<i>y''(0)</i>, <i>y'(0)</i>, <i>y(0)</i>)</label>
+                                    <input type="text" class="form-control" name="initial_conditions" placeholder="ex. 1.2,3.4">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card">
+                                <div class="form-group">
+                                    <label>Integration Precision</label>
+                                    <input type="number" class="form-control" step="0.001" name="t_step" placeholder="Delta t">
+                                </div>
+                                <div class="form-group">
+                                    <label>Graph precision and t-range</label>
+                                    <input type="number" class="form-control" step="0.001" name="dataset_step" placeholder="Graph resolution">
+                                    <input type="number" class="form-control" step="0.001" name="dataset_tmin" placeholder="Minimum t value">
+                                    <input type="number" class="form-control" step="0.001" name="dataset_tmax" placeholder="Maximum t value">
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Enter initial values in the order of decreasing derivative order (y''(0), y'(0), y(0))</label>
-                        <input type="text" class="form-control" name="initial_conditions" placeholder="ex. 1.2,3.4">
+                    <div class="row">
+                        <button type="submit" class="btn btn-cta">Graph</button>
                     </div>
-                    <button type="submit" class="btn btn-primary">Graph</button>
                 </form>
             </div>
-            <div class="row">
-                <div class="col-7">
-                    <canvas id="graph"></canvas>
+            {% if dataset %}
+                <div class="row">
+                    <div class="col-7">
+                        <div class="card">
+                            <canvas id="graph"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        {% if original %}
+                            <div class="row">
+                                <div class="card eq color1">
+                                    <i>{{original}}</i>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="card eq color2">
+                                    <i>{{t_min}} < t < {{t_max}}</i>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
+            {% endif %}
+            <div class="row" style="height: 20px">
             </div>
         </div>
-        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+        <script src="static/js/jquery.min.js"></script>
+        <script src="static/js/chart.min.js"></script>
+        <script src="static/js/popper.min.js"></script>
+        <script src="static/js/bootstrap.min.js"></script>
         <script>
-            /*const chartConfig = {
+            const ctx = document.getElementById('graph').getContext('2d');
+
+            //new Chart(ctx, chartConfig);
+            var scatterChart = new Chart(ctx, {
                 type: 'scatter',
-
-                datasets: [{
-                    label: 'y',
-                    data: {% if dataset %}{{dataset | safe}}{% else %}[]{% endif %}
-                }],
-
+                data: {
+                    datasets: [{
+                        label: 'y(t)',
+                        data: {% if dataset %}{{dataset | safe}}{% else %}[]{% endif %},
+                        showLine: true,
+                        lineTension: 0.3,
+                        pointRadius: 0.1,
+                        borderColor: 'rgba(255, 64, 129, 0.5)',
+                        backgroundColor: 'rgba(255, 128, 171, 0.1)'
+                    }]
+                },
                 options: {
                     scales: {
                         xAxes: [{
                             type: 'linear',
-                            position: 'bottom'
+                            position: 'bottom',
+                            gridLines: {
+                                color: "rgb(80,80,80)"
+                            },
+                            ticks: {
+                                fontColor: "rgb(120,120,120)"
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: 't',
+                                fontColor: "rgb(120,120,120)"
+                            }
+                        }],
+                        yAxes: [{
+                            gridLines: {
+                                color: "rgb(80,80,80)"
+                            },
+                            ticks: {
+                                fontColor: "rgb(120,120,120)"
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'y',
+                                fontColor: "rgb(120,120,120)"
+                            }
                         }]
                     }
                 }
-            }*/
-
-            const ctx = $('#graph');
-
-            //new Chart(ctx, chartConfig);
-            var scatterChart = new Chart(ctx, {
-    type: 'scatter',
-    data: {
-        datasets: [{
-            label: 'y(x)',
-            data: {% if dataset %}{{dataset | safe}}{% else %}[]{% endif %}
-        }]
-    },
-    options: {
-        scales: {
-            xAxes: [{
-                type: 'linear',
-                position: 'bottom'
-            }]
-        }
-    }
-});
+            });
 
             function prepareEquation(){
-                let input = $('#equation');
+                let input = $('#equation_original');
                 let value = input.val();
 
-                value = value.replace(/(y(')\1{0,})|y/g, s => `instance_values[${s.match(/\'/g) ? s.match(/\'/g).length : 0}]`);
-                input.val(value)
+                value = value.replace(/(y(?:')+)|y/g, s => `instance_values[${s.match(/\'/g) ? s.match(/\'/g).length : 0}]`);
+                $('#equation').attr('value', value)
             }
         </script>
     </body>
