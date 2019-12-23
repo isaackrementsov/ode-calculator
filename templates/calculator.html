@@ -30,11 +30,11 @@
                             <div class="card">
                                 <div class="form-group">
                                     <label>Differential equation in terms of <i>y</i> and <i>t</i>, with only the highest derivative of y on the left side</label>
-                                    <input type="text" class="form-control" name="equation_original" id="equation_original" placeholder="ex. y''' = y'' - e^(y+1) + log(t)">
+                                    <input type="text" class="form-control" name="equation_original" id="equation_original" placeholder="ex. y''' = y'' - e^(y+1) + log(t + 1)" required>
                                 </div>
                                 <div class="form-group">
                                     <label>Enter initial values in the order of decreasing derivative order (...<i>y''(0)</i>, <i>y'(0)</i>, <i>y(0)</i>)</label>
-                                    <input type="text" class="form-control" name="initial_conditions" placeholder="ex. 1.2,3.4">
+                                    <input type="text" class="form-control" name="initial_conditions" placeholder="ex. 1.2,3.4" required>
                                 </div>
                             </div>
                         </div>
@@ -42,13 +42,13 @@
                             <div class="card">
                                 <div class="form-group">
                                     <label>Integration Precision</label>
-                                    <input type="number" class="form-control" step="0.001" name="t_step" placeholder="Delta t">
+                                    <input type="number" class="form-control" step="0.001" name="t_step" placeholder="Delta t" required>
                                 </div>
                                 <div class="form-group">
                                     <label>Graph precision and t-range</label>
-                                    <input type="number" class="form-control" step="0.001" name="dataset_step" placeholder="Graph resolution">
-                                    <input type="number" class="form-control" step="0.001" name="dataset_tmin" placeholder="Minimum t value">
-                                    <input type="number" class="form-control" step="0.001" name="dataset_tmax" placeholder="Maximum t value">
+                                    <input type="number" class="form-control" step="0.001" name="dataset_step" placeholder="Graph resolution" required>
+                                    <input type="number" class="form-control" step="0.001" name="dataset_tmin" placeholder="Minimum t value" required>
+                                    <input type="number" class="form-control" step="0.001" name="dataset_tmax" placeholder="Maximum t value" required>
                                 </div>
                             </div>
                         </div>

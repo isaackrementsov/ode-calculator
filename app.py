@@ -78,7 +78,8 @@ def calculator():
         # If there was an error parsing form data, send it to the user
         return render_template('calculator.html', error='Invalid Form Data')
 
-    except Exception:
+    except Exception as e:
+        print(e)
         # If there was another error, it was probably an issue with the server code
         return render_template('calculator.html', error='Sorry, there was a server error')
 
@@ -116,12 +117,13 @@ def parse_equation(equation_string):
     equation_string = re.sub('\[[0-9]+\]', choose_instance_index, equation_string)
     # Make all functions "np." so that they can be called by the code; replace "^" with "**" for exponentiation
     equation_string = re.sub('(sin|tan|cos|arcsin|arctan|arccos)\(', add_np, equation_string)
+    equation_string = re.sub('e(?!(_|s))', '2.71828', equation_string)
+    equation_string = equation_string.replace('pi', '3.14159')
     equation_string = equation_string.replace('^', '**')
 
     # Change the log functions because numpy uses log instead of ln and log10 instead of log
     equation_string = equation_string.replace('ln(', 'np.log(')
     equation_string = equation_string.replace('log(', 'np.log10(')
-
 
     # Evaluate the right side of the function to calculate the highest order derivative in the ODE
     def get_highest_order(instance_values, t):
