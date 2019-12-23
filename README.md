@@ -8,7 +8,7 @@ Check it out online [here](http://odecalculator.pythonanywhere.com)
 This is a way to graph any Ordinary Differential Equation, based on the code from [3Blue1Brown's video](https://www.youtube.com/watch?v=p_di4Zn4wz4)
 
 Let's say you have the equation
-<p style="text-align: center"><img src="https://latex.codecogs.com/svg.latex?y''=-0.5y-4.9sin(y)"></p>
+<p style="text-align: center"><img src="https://latex.codecogs.com/svg.latex?y''=-0.5y'-4.9sin(y)"></p>
 <p style="text-align: right"><b>(eq 1)</b></p>
 This is an equation that can be used to model damped pendulum motion over time, where <i>y</i> is position, <i>y'</i> is velocity, and <i>y''</i> is acceleration.
 Instead of attempting to use algebraic techniques and theorems to solve the equation (which is near impossible in this case), this program uses numeric integration.
