@@ -22,8 +22,8 @@ class ODECalculator:
         # The number of initial conditions is the same as the equation order or degree
         equation_degree = len(instance_values) - 1
 
-        # Generate the range of values for numeric integration with a Reimann sum
-        for t in np.arange(0, x, self.dt):
+        # Numerically integrate over range
+        for t in (np.arange(0, x, self.dt) if x > 0 else np.flip(np.arange(x, 0 + self.dt, self.dt))):
             # Calculate each derivative (and y) in instance values
             for i in range(equation_degree + 1):
                 if i == 0:
@@ -31,7 +31,7 @@ class ODECalculator:
                     instance_values[i] = self.get_highest_order(instance_values, t)
                 else:
                     # For the higher derivatives (and y), increment by the previous derivative, numerically integrating
-                    instance_values[i] += instance_values[i - 1] * self.dt
+                    instance_values[i] += instance_values[i - 1] * self.dt * (1 if x > 0 else -1) 
 
         # Return the highest instance value index, which is y
         return instance_values[equation_degree]
