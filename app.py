@@ -26,34 +26,47 @@ def calculator():
     equation_input = request.values.get('equation')
     equation_original = request.values.get('equation_original')
 
-    try:
-        # If the user entered form data, respond with the ODE solution
-        if equation_input:
+    # If the user entered form data, respond with the ODE solution
+    if equation_input:
+        # Get the t-range to graph the ODE solution over
+        dataset_tmin = request.values.get('dataset_tmin')
+        dataset_tmax = request.values.get('dataset_tmax')
+
+        # Get the t-interval or step to solve by numeric integration
+        t_step = request.values.get('t_step')
+        initial_condition_input = request.values.get('initial_conditions')
+
+        # Get the graph resolution for generating data
+        dataset_step_string = request.values.get('dataset_step')
+
+        # Set default form data
+        form_data = dict(
+            equation=equation_original,
+            tmin=dataset_tmin,
+            tmax=dataset_tmax,
+            tstep=t_step,
+            dt=t_step,
+            initial_conditions=initial_condition_input
+        )
+
+        try:
+            dataset_tmin = float(dataset_tmin)
+            dataset_tmax = float(dataset_tmax)
             # Parse the equation string to a usable function and record the equation's highest order derivative, or degree
             get_highest_order, equation_degree = parse_equation(equation_input)
 
-            # Get the graph resolution for generating data as a float
-            dataset_step_string = request.values.get('dataset_step');
-            dataset_step = float(dataset_step_string)
-            # Find the decimal precision of this step for rounding
-            precision = -decimal.Decimal(dataset_step_string).as_tuple().exponent
-
-            # Get the t-interval or step to solve by numeric integration
-            t_step = float(request.values.get('t_step'))
-
-            # Get the t-range to graph the ODE solution over
-            dataset_tmin = int(request.values.get('dataset_tmin'))
-            dataset_tmax = int(request.values.get('dataset_tmax'))
-
             # Get the initial conditions of the differential equation and parse them into a list
-            initial_condition_input = request.values.get('initial_conditions')
-            initial_conditions = map(int, initial_condition_input.split(','))
+            initial_conditions = map(float, initial_condition_input.split(','))
             initial_conditions = list(initial_conditions)
 
             # Make sure that the initial conditions match the equation degree (ex. a 2nd order ODE needs y(0), y'(0))
             if len(initial_conditions) == equation_degree:
+                dataset_step = float(dataset_step_string)
+                # Find the decimal precision of this step for rounding
+                precision = -decimal.Decimal(dataset_step_string).as_tuple().exponent
+
                 # Initilize the calcuator
-                calculator = ODECalculator(initial_conditions, get_highest_order, t_step)
+                calculator = ODECalculator(initial_conditions, get_highest_order, float(t_step))
                 # Plug in the ODE solution as the function for the data generator to evaluate
                 data_generator = DataGenerator(calculator.solution)
 
@@ -61,7 +74,7 @@ def calculator():
                 dataset = data_generator.generate_data(dataset_tmin, dataset_tmax, dataset_step, precision)
 
                 # Render the template with data and pass the original parameters back to the user
-                return render_template('calculator.html', dataset=dataset, original=equation_original, t_min=dataset_tmin, t_max=dataset_tmax)
+                return render_template('calculator.html', dataset=dataset, original=equation_original, t_min=dataset_tmin, t_max=dataset_tmax, form_data=form_data)
 
             else:
                 # If the improper amount of initial conditions were provided, provide the user with an error
@@ -69,19 +82,19 @@ def calculator():
                 if equation_degree > 1:
                     error += 's'
 
-                return render_template('calculator.html', error=error)
-        else:
-            # If no form data was sent, simply render the page
-            return render_template('calculator.html')
+                return render_template('calculator.html', error=error, form_data=form_data)
 
-    except ValueError:
-        # If there was an error parsing form data, send it to the user
-        return render_template('calculator.html', error='Invalid Form Data')
+        except ValueError:
+            # If there was an error parsing form data, send it to the user
+            return render_template('calculator.html', error='Invalid Form Data', form_data=form_data)
 
-    except Exception as e:
-        print(e)
-        # If there was another error, it was probably an issue with the server code
-        return render_template('calculator.html', error='Sorry, there was a server error')
+        except Exception as e:
+            # If there was another error, it was probably an issue with the server code
+            return render_template('calculator.html', error='Server error: ' + str(e), form_data=form_data)
+
+    else:
+        # If no form data was sent, simply render the page
+        return render_template('calculator.html')
 
 
 # Parse a user-entered equation string

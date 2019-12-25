@@ -20,8 +20,10 @@
                     <input type="hidden" name="equation" id="equation">
                     <div class="row">
                         {% if error %}
-                            <div class="form-group">
-                                <label style="color: #FF4081">{{error}}</label>
+                            <div class="col-lg">
+                                <div class="form-group">
+                                    <label style="color: #FF4081">{{error}}</label>
+                                </div>
                             </div>
                         {% endif %}
                     </div>
@@ -30,11 +32,14 @@
                             <div class="card">
                                 <div class="form-group">
                                     <label>Differential equation in terms of <i>y</i> and <i>t</i>, with only the highest derivative of y on the left side</label>
-                                    <input type="text" class="form-control" name="equation_original" id="equation_original" placeholder="ex. y''' = y'' - e^(y+1) + log(t + 1)" required>
+                                    <input type="text" class="form-control" name="equation_original" id="equation_original"
+                                        placeholder="ex. y''' = y'' - e^(y+1) + log(t + 1)" required
+                                        {% if form_data %} value="{{form_data.equation}}" {% endif %}>
                                 </div>
                                 <div class="form-group">
                                     <label>Enter initial values in the order of decreasing derivative order (...<i>y''(0)</i>, <i>y'(0)</i>, <i>y(0)</i>)</label>
-                                    <input type="text" class="form-control" name="initial_conditions" placeholder="ex. 1.2,3.4" required>
+                                    <input type="text" class="form-control" name="initial_conditions" placeholder="ex. 1.2,3.4" required
+                                        {% if form_data %} value="{{form_data.initial_conditions}}" {% endif %}>
                                 </div>
                             </div>
                         </div>
@@ -42,13 +47,17 @@
                             <div class="card">
                                 <div class="form-group">
                                     <label>Integration Precision</label>
-                                    <input type="number" class="form-control" step="0.001" name="t_step" placeholder="Delta t" required>
+                                    <input type="number" class="form-control" step="0.001" name="t_step" placeholder="Delta t" required
+                                    {% if form_data %} value="{{form_data.dt}}" {% endif %}>
                                 </div>
                                 <div class="form-group">
                                     <label>Graph precision and t-range</label>
-                                    <input type="number" class="form-control" step="0.001" name="dataset_step" placeholder="Graph resolution" required>
-                                    <input type="number" class="form-control" step="0.001" name="dataset_tmin" placeholder="Minimum t value" required>
-                                    <input type="number" class="form-control" step="0.001" name="dataset_tmax" placeholder="Maximum t value" required>
+                                    <input type="number" class="form-control" step="0.001" name="dataset_step" placeholder="Graph resolution" required
+                                        {% if form_data %} value="{{form_data.tstep}}" {% endif %}>
+                                    <input type="number" class="form-control" step="0.001" name="dataset_tmin" placeholder="Minimum t value" required
+                                        {% if form_data %} value="{{form_data.tmin}}" {% endif %}>
+                                    <input type="number" class="form-control" step="0.001" name="dataset_tmax" placeholder="Maximum t value" required
+                                        {% if form_data %} value="{{form_data.tmax}}" {% endif %}>
                                 </div>
                             </div>
                         </div>

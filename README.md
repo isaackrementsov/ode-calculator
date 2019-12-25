@@ -25,3 +25,6 @@ Once <i>y'</i> and <i>y</i> are incremented, their values are plugged into equat
 Thus, a function for <i>y(T)</i>, the solution to the differential equation, can be determined. It is not algebraically defined, but running the numeric algorithm for
 any <i>T</i> value that needs to be found gives a close approximation. This web application evaluates the function over a range of values to generate a graph.
 The closer the timestep is to 0, the more accurate the approximation becomes.
+
+### Limits of the Grapher
+Please be aware that the method of numeric integration used in this calculator has its limitations. If the solution being plotted has vertical asymptotes or becomes very large or very small (greater than 10^28/less than 10^-28) within the input range, its values will be ignored. Furthermore, any values obtained by integrating past this area will probably be incorrect. The same issue will be present if any of the derivatives involved in the differential equations have these extreme values. Jump, gap, and removable discontinuities will cause the same issues.
